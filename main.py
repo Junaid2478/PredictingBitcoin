@@ -15,14 +15,17 @@ from keras.layers import Dense, LSTM, Dropout
 import tensorflow as tf
 
 from models.LSTM_model import run_lstm
+from models.KNN_model import run_knn
 
 
 def main(modelname):
     if  modelname == 'LSTM':
         run_lstm()
+    elif modelname=='KNN':
+        run_knn()
 
 
 
 if __name__=='__main__':
-    model='LSTM' # options are LSTM, KNN, RandForest, Linear
+    model='KNN' # options are LSTM, KNN, RandForest, Linear
     main(model)

@@ -72,6 +72,18 @@ def pre_processing():
 # plt.plot(data["close"], label='Close Price history')
 # plt.show()
 
+def new_dataset(dataset, time_step=1):
+    """
+    how many time steps to look back at to decide next data point
+    :return:  Tuple of x values and y values
+    """
+    X_data, y_data = [], []
+    for i in range(len(dataset) - time_step):
+        x = dataset[i:(i + time_step), 0]
+        X_data.append(x)
+        y_data.append(dataset[i + time_step, 0])
+    print(len(y_data))
+    return np.array(X_data), np.array(y_data)
 
 def split_dataset(scaled_data):
     """
@@ -103,18 +115,7 @@ def split_dataset(scaled_data):
 
     return ((X_train,y_train),(X_test, y_test))
 
-def new_dataset(dataset, time_step=1):
-    """
-    how many time steps to look back at to decide next data point
-    :return:  Tuple of x values and y values
-    """
-    X_data, y_data = [], []
-    for i in range(len(dataset) - time_step):
-        x = dataset[i:(i + time_step), 0]
-        X_data.append(x)
-        y_data.append(dataset[i + time_step, 0])
-    print(len(y_data))
-    return np.array(X_data), np.array(y_data)
+
 
 def build_model(trainset):
     """
