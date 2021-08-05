@@ -90,7 +90,7 @@ def run_knn():
     y=data['close']
 
     data_np=np.array(data)
-    X_train , X_test, y_train, y_test = train_test_split(X,y, test_size = 0.2, random_state = 0,shuffle=False)
+    X_train , X_test, y_train, y_test = train_test_split(X,y, test_size = 0.05, random_state = 0,shuffle=False)
 
     print(X_train.shape)
 
@@ -107,6 +107,9 @@ def run_knn():
         K = K + 1
         KNN = KNeighborsRegressor(n_neighbors=K, weights = 'distance', p=1)
         X_train=np.array(X_train).reshape(-1, 1)
+
+        X_train = np.array(range(len(X_train))).reshape(-1, 1)
+
         KNN.fit(X_train, y_train)  # fit the model
         X_test = np.array(X_test).reshape(-1, 1)
         predict = KNN.predict(X_test)  # make prediction on test set
@@ -118,7 +121,7 @@ def run_knn():
     # visualizing the RMSE error depending on the K value
 
     # plt.figure(figsize=(16, 8))
-    # plt.plot(range(1, 141), rmse, color='red', linestyle='dashed', marker='o',
+    # plt.plot(range(1, 101), rmse, color='red', linestyle='dashed', marker='o',
     #          markerfacecolor='blue', markersize=10)
     # plt.title('Error Rate K Value')
     # plt.xlabel('K Value')
@@ -126,29 +129,37 @@ def run_knn():
     # plt.show()
 
     # This section graphs for a particular K value
-    K=5
+    K=20**3
     test_size =len(y_test)
+    X_steps=np.array(range(len(X)))
+
     X_train = X[: -test_size]
+    X_train_steps=X_steps[: -test_size].reshape(-1, 1)
+
     y_train = y[: -test_size]
+
     X_test = X[-test_size:]
+    X_test_steps=X_steps[-test_size:].reshape(-1, 1)
+
     y_test = y[-test_size:]
 
     KNN = KNeighborsRegressor(n_neighbors=K , weights = 'distance', algorithm='auto', p=2)
     X_train = np.array(X_train).reshape(-1, 1)
 
     # TODO change
-    X_train = np.array(range(len(X_train))).reshape(-1, 1)
+    X_train = np.array(range(len(X_train),   )).reshape(-1, 1)
 
     y_train = np.array(y_train).reshape(-1, 1)
 
-    KNN.fit(X_train, y_train)
-    X_test = np.array(X_test).reshape(-1, 1)
-    X_test = np.array(range(len(X_test))).reshape(-1, 1)
+    KNN.fit(X_train_steps, y_train)
+    X_test_dates = np.array(X_test).reshape(-1, 1)
+    X_test = np.array(range(len(X_test_dates))).reshape(-1, 1)
 
     print(X_test)
 
-    predict = KNN.predict(X_test)  # make prediction on test set
+    predict = KNN.predict(X_test_steps)  # make prediction on test set
     rmse = sqrt(mean_squared_error(y_test, predict))  # calculate rmse
+    print(rmse)
     print(f'predict:{predict}')
 
     y_predicted  = predict.reshape(-1, 1)
@@ -161,7 +172,8 @@ def run_knn():
     X = X_test_shape.flatten()
     Y =  y_actual.flatten()
 
-    plt.plot(X, Y, label = "Actual Bitcoin Price")
-    plt.plot(X_test_shape, y_predicted, label = "Predicted Bitcoin Price",  color='red')
+    # plt.plot(data['date'], data['close'])
+    plt.plot(X_test_dates.flatten(), Y, label = "Actual Bitcoin Price")
+    plt.plot(X_test_dates.flatten(), y_predicted, label = "Predicted Bitcoin Price",  color='red')
     plt.show()
 
