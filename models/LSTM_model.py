@@ -96,7 +96,7 @@ def split_dataset(scaled_data):
     print(len(train), len(test))
 
     # generate dataset for train x, train y, test x and test y
-    time_step = 1
+    time_step = 12
     X_train, y_train = new_dataset(train, time_step)
     X_test, y_test = new_dataset(test, time_step)
 

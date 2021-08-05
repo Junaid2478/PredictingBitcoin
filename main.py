@@ -17,6 +17,12 @@ import tensorflow as tf
 from models.LSTM_model import run_lstm
 from models.KNN_model import run_knn
 
+# class App:
+#     def __init__(self):
+#         gui=Gui()
+#         models=Something()
+
+
 
 def main(modelname):
     if  modelname == 'LSTM':
