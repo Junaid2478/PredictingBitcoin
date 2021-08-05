@@ -129,6 +129,8 @@ def run_knn():
     # plt.show()
 
     # This section graphs for a particular K value
+    # https://www.diva-portal.org/smash/get/diva2:771141/FULLTEXT01.pdf
+    # see conclusion about including all data values
     K=20**3
     test_size =len(y_test)
     X_steps=np.array(range(len(X)))
@@ -177,3 +179,13 @@ def run_knn():
     plt.plot(X_test_dates.flatten(), y_predicted, label = "Predicted Bitcoin Price",  color='red')
     plt.show()
 
+"""
+Because KNN looks at the N nearest points, and we are predicting the future, the same N nearest points will be considered each time. 
+So, we need a very large N to avoid near-constant predictions.
+As we are interpolating between the points, we can never predict large rises, especially beyond all-time highs in the training set.
+Same goes for all time lows etc. 
+
+This dataset is particularly tough for KNN, as is the problem of predicting the future rather than interpolation between known data points.
+
+Overall, these show reasonable results in some instances, with poor results in general.
+"""
