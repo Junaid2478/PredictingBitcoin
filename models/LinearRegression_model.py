@@ -12,6 +12,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
+from sklearn.metrics import mean_absolute_error
 
 def run_linear_regression():
     # read the dataset
@@ -60,6 +61,13 @@ def run_linear_regression():
     error = sqrt(mean_squared_error(y_test, y_pred))
     print(error)
 
+    MAE = mean_absolute_error(y_test,y_pred)
+    print(MAE)
+
+    # return generate_df(y_test, y_pred, X_test)
+    fig = plt.figure()
     plt.plot(X_test_steps, y_test.flatten(), label="Actual Bitcoin Price")
     plt.plot(X_test_steps, y_pred, label="Predicted Bitcoin Price", color='red')
-    plt.show()
+    # plt.show()
+    return fig
+

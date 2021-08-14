@@ -6,11 +6,10 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import plotly.offline as py
 from sklearn.decomposition import PCA
-import plotly.graph_objs as go
 from sklearn.metrics import mean_squared_error
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM, Dropout
-
+import matplotlib.pyplot as plt
 
 def pre_processing():
     """
@@ -115,8 +114,6 @@ def split_dataset(scaled_data):
 
     return ((X_train,y_train),(X_test, y_test))
 
-
-
 def build_model(trainset):
     """
     Build LSTM model
@@ -169,9 +166,11 @@ def generate_graphs(data, y_actual, y_predict, X_test, rmse, scaler):
     y_test_reshape = y_actual_inverse.reshape(len(y_actual_inverse))
     y_predict_reshape = y_predicted_inverse.reshape(len(y_predicted_inverse))
 
-    real_chart = go.Scatter(x=x_dates, y=y_test_reshape, name='Actual Bitcoin Price')
-    forecast_chart = go.Scatter(x=x_dates, y=y_predict_reshape, name=f'Predicted Bitcoin Price (rmse: {rmse})')
-    py.plot([forecast_chart, real_chart])
+    # return generate_df(y_test, y_pred, X_test)
+    fig = plt.figure()
+    plt.plot(x_dates, y_test_reshape, label="Actual Bitcoin Price")
+    plt.plot(x_dates, y_predict_reshape, label=f'Predicted Bitcoin Price (rmse: {rmse})', color='red')
+    return fig
 
 def run_lstm():
     datascaled, scaler, data =pre_processing()
@@ -182,5 +181,5 @@ def run_lstm():
     (y_test,y_predict)=predict(model, testset)
     rmse=get_rmse(y_test,y_predict, scaler)
     X_test,_=testset
-    generate_graphs(data, y_test, y_predict, X_test, rmse, scaler)
+    return generate_graphs(data, y_test, y_predict, X_test, rmse, scaler)
 

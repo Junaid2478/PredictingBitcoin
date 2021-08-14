@@ -6,7 +6,9 @@ from math import sqrt
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_error
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 
@@ -65,17 +67,13 @@ def run_random_forest():
     #
     #
     # # Created a PCA object that chooses the minimum number of components so that the variance is retained
-    # pca = PCA(.95)
-    # #
-    # # applying pca to our scaled data
-    # pca.fit(scaled_data)
-    # x_pca = pca.transform(scaled_data)
+
 
     # create a random forrest object
     model = RandomForestRegressor(n_estimators=100)
 
     # look at regression model so it doesnt just look at next value
-    # fit the RFR with training data
+    # fit the RFR
     model.fit(X_train_steps, y_train)
 
     # predict price
@@ -86,19 +84,15 @@ def run_random_forest():
     error = sqrt(mean_squared_error(y_test, y_pred))
     print(error)
 
+    MAE = mean_absolute_error(y_test, y_pred)
+    print(MAE)
+
+    fig = plt.figure()
     plt.plot(X_test, y_test.flatten(), label="Actual Bitcoin Price")
     plt.plot(X_test, y_pred, label="Predicted Bitcoin Price", color='red')
-    plt.show()
+    return fig
 
-# shows the magnitude of importance of features
-# RandomForrest.save('C:/Users/jun/Documents/Computer Science/Semester 3/Dissertation/')
-# use it to predict a certain date
-
-# print(df['date'])
-
-# real_chart = go.Scatter(x=data['date'], y=data['close'], name='Actual Bitcoin Price')
-# forecast_chart = go.Scatter(x=data['date'], y=y_pred, name='Predicted Bitcoin Price')
-# py.plot([real_chart, forecast_chart])
 
 
 # https://neptune.ai/blog/random-forest-regression-when-does-it-fail-and-why
+# Random Forrest suffers from the extrapolation problem when applied to our dataset and considering our dataset

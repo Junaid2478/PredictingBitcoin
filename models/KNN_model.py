@@ -7,6 +7,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 import numpy as np
 from math import ceil, sqrt
+from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import train_test_split
 import plotly.offline as py
 import plotly.graph_objs as go
@@ -53,7 +54,7 @@ def split_dataset(scaled_data):
     # y_train = pca.fit_transform(y_train)
     # y_test = pca.transform(y_test)
 
-    # reshaping our data for so it fits LSTM
+    # reshaping our data for so it fits
     X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
     X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
 
@@ -78,7 +79,7 @@ def run_knn():
     data.drop('Volume_BTC', axis=1, inplace=True)
     data.drop('open', axis=1, inplace=True)
 
-    # replaces null values with average
+    # replaces null values with interpolated data
     data = data.interpolate(methods='linear')
 
     # the max k values needed with our particular dataset, look into this
@@ -117,7 +118,6 @@ def run_knn():
         rmse.append(error)  # store rmse values
         print('RMSE value for k= ', K, 'is:', error)
 
-    # https://www.analyticsvidhya.com/blog/2018/08/k-nearest-neighbor-introduction-regression-python/
     # visualizing the RMSE error depending on the K value
 
     # plt.figure(figsize=(16, 8))
@@ -164,6 +164,10 @@ def run_knn():
     print(rmse)
     print(f'predict:{predict}')
 
+    MAE = mean_absolute_error(y_test, predict)
+    print(MAE)
+
+
     y_predicted  = predict.reshape(-1, 1)
     y_actual = np.array(y_test).reshape(-1, 1)
 
@@ -175,9 +179,10 @@ def run_knn():
     Y =  y_actual.flatten()
 
     # plt.plot(data['date'], data['close'])
+    fig = plt.figure()
     plt.plot(X_test_dates.flatten(), Y, label = "Actual Bitcoin Price")
     plt.plot(X_test_dates.flatten(), y_predicted, label = "Predicted Bitcoin Price",  color='red')
-    plt.show()
+    return fig
 
 """
 Because KNN looks at the N nearest points, and we are predicting the future, the same N nearest points will be considered each time. 
