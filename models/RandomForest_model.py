@@ -88,6 +88,7 @@ def run_random_forest():
     print(MAE)
 
     fig = plt.figure()
+    fig = plt.figure(figsize=(16, 8))
     plt.plot(X_test, y_test.flatten(), label="Actual Bitcoin Price")
     plt.plot(X_test, y_pred, label="Predicted Bitcoin Price", color='red')
     return fig

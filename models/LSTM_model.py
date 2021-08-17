@@ -135,7 +135,7 @@ def build_model(trainset):
 
 def train_model(model,train_test_datasets):
     ((X_train,y_train),(X_test, y_test))=train_test_datasets
-    model.fit(X_train, y_train, epochs=25, batch_size=50, validation_data=(X_test, y_test), verbose=0, shuffle=False)
+    model.fit(X_train, y_train, epochs=100, batch_size=50, validation_data=(X_test, y_test), verbose=0, shuffle=False)
 
 def predict(model,  testset):
     X_test,y_test=testset
@@ -168,6 +168,7 @@ def generate_graphs(data, y_actual, y_predict, X_test, rmse, scaler):
 
     # return generate_df(y_test, y_pred, X_test)
     fig = plt.figure()
+    fig = plt.figure(figsize=(16, 8))
     plt.plot(x_dates, y_test_reshape, label="Actual Bitcoin Price")
     plt.plot(x_dates, y_predict_reshape, label=f'Predicted Bitcoin Price (rmse: {rmse})', color='red')
     return fig

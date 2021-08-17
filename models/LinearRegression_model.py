@@ -66,8 +66,9 @@ def run_linear_regression():
 
     # return generate_df(y_test, y_pred, X_test)
     fig = plt.figure()
-    plt.plot(X_test_steps, y_test.flatten(), label="Actual Bitcoin Price")
-    plt.plot(X_test_steps, y_pred, label="Predicted Bitcoin Price", color='red')
-    # plt.show()
+    fig = plt.figure(figsize=(16, 8))
+    plt.plot(X_test, y_test.flatten(), label="Actual Bitcoin Price")
+    plt.plot(X_test, y_pred, label="Predicted Bitcoin Price", color='red')
     return fig
 
+  # TODO fix axis

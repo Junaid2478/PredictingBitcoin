@@ -19,11 +19,37 @@ import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px
 import plotly.tools as tls
+from threading import Thread
+import concurrent.futures
 
 import pandas as pd
 
 from models.LinearRegression_model import run_linear_regression
 from models.RandomForest_model import run_random_forest
+
+
+# def get_models_hashmap():
+#     print('#################################################')
+#     que = []
+#
+#     knn_thread = Thread(target=que.append(("KNN",run_knn())), args=())
+#     knn_thread.start()
+#
+#     lstm_thread = Thread(target=que.append(("LSTM",run_lstm())), args=())
+#     lstm_thread.start()
+#
+#     linear_thread = Thread(target=que.append(("LinearRegression",run_linear_regression())), args=())
+#     linear_thread.start()
+#
+#     random_forest_thread = Thread(target=que.append(("RandomForest",run_random_forest())), args=())
+#     random_forest_thread.start()
+#
+#     knn_thread.join()
+#     lstm_thread.join()
+#     linear_thread.join()
+#     random_forest_thread.join()
+#
+#     return dict(que)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -34,24 +60,19 @@ colors = {
     'text': '#7FDBFF'
 }
 
-
-
 model_names=['KNN', 'LSTM', 'LinearRegression','RandomForest']
-# print(df)
-# fig = px.scatter(df, x="Dates", y="Predicted")
-
-
+# models_hashmap = get_models_hashmap()
 
 app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
     html.H1(
-        children='Hello Dash',
+        children='Predicting The Price Of Bitcoin',
         style={
             'textAlign': 'center',
             'color': colors['text']
         }
     ),
 
-    html.Div(children='Dash: A web application framework for Python.', style={
+    html.Div(children='Choose a Machine Learning Model', style={
         'textAlign': 'center',
         'color': colors['text']
     }),
@@ -59,7 +80,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     dcc.Dropdown(
         id='xaxis-column',
         options=[{'label': i, 'value': i} for i in model_names],
-        value='Fertility rate, total (births per woman)'
+        value='KNN'
     ),
     html.Div(id='dd-output-container'),
 
@@ -72,62 +93,22 @@ app.layout = html.Div(style={'backgroundColor': colors['background']}, children=
     Input('xaxis-column', 'value'))
 
 def update_graph(model_name,):
+    # fig = models_hashmap[model_name]
     if model_name=='KNN':
-        fig = run_knn()
-    elif model_name=='LinearRegression':
-        fig = run_linear_regression()
-    elif model_name=='LSTM':
-        fig = run_lstm()
+        fig=run_knn()
     elif model_name=='RandomForest':
-        fig = run_random_forest()
+        fig=run_random_forest()
+    elif model_name=='LinearRegression':
+        fig=run_linear_regression()
+    elif model_name=='LSTM':
+        fig=run_lstm()
     fig = tls.mpl_to_plotly(fig)
     fig.update_layout(
         plot_bgcolor=colors['background'],
         paper_bgcolor=colors['background'],
         font_color=colors['text']
     )
-    # dff = df[df['Year'] == year_value]
-    #
-    # fig = px.scatter(x=dff[dff['Indicator Name'] == xaxis_column_name]['Value'],
-    #                  y=dff[dff['Indicator Name'] == yaxis_column_name]['Value'],
-    #                  hover_name=dff[dff['Indicator Name'] == yaxis_column_name]['Country Name'])
-    #
-    # fig.update_layout(margin={'l': 40, 'b': 40, 't': 10, 'r': 0}, hovermode='closest')
-    #
-    # fig.update_xaxes(title=xaxis_column_name,
-    #                  type='linear' if xaxis_type == 'Linear' else 'log')
-    #
-    # fig.update_yaxes(title=yaxis_column_name,
-    #                  type='linear' if yaxis_type == 'Linear' else 'log')
-
     return fig
 
-app.run_server(debug=True)
-
-# def run_dashboard():
-#     app = dash.Dash()
-#     app.layout = html.Div(children =[]
-#         html.H1('Bitcoin Prediction models'),
-#
-#         html.Div(children= '')
-#         dcc.Dropdown(id= 'choose model'),
-#         options=[
-#         {'Linear': 'RandomForest', 'LSTM': 'KNN'},
-#         html.Div(id="output-graph")
-#     ],
-#
-#         dcc.Input(id="input", value='', type='text'),
-#         html.Div(id="output-graph")
-#     })
-#
-# # setting up the callback function and how the user will interact with the app
-#
-#     @app.callback(
-#         Output(component_id="output-graph", component_property='children',
-#         Input(component_id="my-input", component_property="value"  )
-#     )
-#
-# # function that updates value
-#     def update_value(input_value):
-#         return 'Output: {}'.format(input_value)
-# #   https: // dash.plotly.com / dash - core - components
+if __name__=='__main__':
+    app.run_server(debug=True)

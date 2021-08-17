@@ -179,7 +179,7 @@ def run_knn():
     Y =  y_actual.flatten()
 
     # plt.plot(data['date'], data['close'])
-    fig = plt.figure()
+    fig = plt.figure(figsize=(16, 8))
     plt.plot(X_test_dates.flatten(), Y, label = "Actual Bitcoin Price")
     plt.plot(X_test_dates.flatten(), y_predicted, label = "Predicted Bitcoin Price",  color='red')
     return fig
