@@ -33,8 +33,6 @@ def run_random_forest():
     # splitting the data so it is 95% training and 5% test
     train, test = train_test_split(data, test_size=0.05, shuffle=False)
 
-
-
     X_train = np.array(train['date'])
     y_train = np.array(train['close']).reshape(-1,1)
 
@@ -90,7 +88,9 @@ def run_random_forest():
     fig = plt.figure()
     fig = plt.figure(figsize=(16, 8))
     plt.plot(X_test, y_test.flatten(), label="Actual Bitcoin Price")
-    plt.plot(X_test, y_pred, label="Predicted Bitcoin Price", color='red')
+    plt.plot(X_test, y_pred, label="Predicted Bitcoin Price", color='red', linestyle= 'dashed')
+    plt.rc('xtick', labelsize=15)
+    plt.rc('ytick', labelsize=20)
     return fig
 
 

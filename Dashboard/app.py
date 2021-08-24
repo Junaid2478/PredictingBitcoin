@@ -5,6 +5,7 @@ import plotly.express as px
 import pandas as pd
 from dash.dependencies import Output, Input
 
+from models.Ensemble_model import run_ensemble
 from models.KNN_model import run_knn
 from models.LSTM_model import run_lstm
 
@@ -28,28 +29,33 @@ from models.LinearRegression_model import run_linear_regression
 from models.RandomForest_model import run_random_forest
 
 
-# def get_models_hashmap():
-#     print('#################################################')
-#     que = []
-#
-#     knn_thread = Thread(target=que.append(("KNN",run_knn())), args=())
-#     knn_thread.start()
-#
-#     lstm_thread = Thread(target=que.append(("LSTM",run_lstm())), args=())
-#     lstm_thread.start()
-#
-#     linear_thread = Thread(target=que.append(("LinearRegression",run_linear_regression())), args=())
-#     linear_thread.start()
-#
-#     random_forest_thread = Thread(target=que.append(("RandomForest",run_random_forest())), args=())
-#     random_forest_thread.start()
-#
-#     knn_thread.join()
-#     lstm_thread.join()
-#     linear_thread.join()
-#     random_forest_thread.join()
-#
-#     return dict(que)
+def get_models_hashmap():
+    #store the models using hashmap
+    print('#################################################')
+    que = []
+
+    knn_thread = Thread(target=que.append(("KNN",run_knn())), args=())
+    knn_thread.start()
+
+    lstm_thread = Thread(target=que.append(("LSTM",run_lstm())), args=())
+    lstm_thread.start()
+
+    linear_thread = Thread(target=que.append(("LinearRegression",run_linear_regression())), args=())
+    linear_thread.start()
+
+    random_forest_thread = Thread(target=que.append(("RandomForest",run_random_forest())), args=())
+    random_forest_thread.start()
+
+    ensemble = Thread(target=que.append(("Ensemble",run_ensemble())), args=())
+    ensemble.start()
+
+    knn_thread.join()
+    lstm_thread.join()
+    linear_thread.join()
+    random_forest_thread.join()
+    ensemble.join()
+
+    return dict(que)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -60,7 +66,7 @@ colors = {
     'text': '#7FDBFF'
 }
 
-model_names=['KNN', 'LSTM', 'LinearRegression','RandomForest']
+model_names=['KNN', 'LSTM', 'LinearRegression','RandomForest','Ensemble']
 # models_hashmap = get_models_hashmap()
 
 app.layout = html.Div(style={'backgroundColor': colors['background']}, children=[
@@ -102,6 +108,8 @@ def update_graph(model_name,):
         fig=run_linear_regression()
     elif model_name=='LSTM':
         fig=run_lstm()
+    elif model_name=='Ensemble':
+        fig=run_ensemble()
     fig = tls.mpl_to_plotly(fig)
     fig.update_layout(
         plot_bgcolor=colors['background'],
@@ -112,3 +120,7 @@ def update_graph(model_name,):
 
 if __name__=='__main__':
     app.run_server(debug=True)
+
+    # show the predicted key and actual key on the side of the dashboard
+    # change to the correct colors
+    #improve ensemble model

@@ -1,5 +1,4 @@
 
-from Dashboard.app import run_dashboard
 from models.LSTM_model import run_lstm
 from models.KNN_model import run_knn
 from models.RandomForest_model import run_random_forest
@@ -29,7 +28,7 @@ def main(modelname):
 
 
 if __name__=='__main__':
-    model='Linear' # options are LSTM, KNN, RandForest, Linear
+    model='KNN' # options are LSTM, KNN, RandForest, Linear
     main(model)
 
 #

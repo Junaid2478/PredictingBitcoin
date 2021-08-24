@@ -73,31 +73,38 @@ def pre_processing():
 
 def new_dataset(dataset, time_step=1):
     """
-    how many time steps to look back at to decide next data point
-    :return:  Tuple of x values and y values
+     convert an array of values into a dataset matrix
     """
     X_data, y_data = [], []
     for i in range(len(dataset) - time_step):
         x = dataset[i:(i + time_step), 0]
         X_data.append(x)
         y_data.append(dataset[i + time_step, 0])
-    print(len(y_data))
+
     return np.array(X_data), np.array(y_data)
 
-def split_dataset(scaled_data):
+def split_dataset(dates, scaled_data):
     """
     splitting the data so it is 95% training and 5% test
     :returns training set and test set as tuple
     """
 
     training_data_len = int(len(scaled_data) * 0.95)
-    train, test = scaled_data[0:training_data_len, :], scaled_data[training_data_len:len(scaled_data), :]
-    print(len(train), len(test))
+
+    # X_train, X_test = np.array(dates[0:training_data_len]), np.array(dates[training_data_len:len(scaled_data)])
+    y_train, y_test = np.array(scaled_data[0:training_data_len, :]), np.array(scaled_data[training_data_len:len(scaled_data), :])
+    print(len(y_train), len(y_test))
 
     # generate dataset for train x, train y, test x and test y
-    time_step = 12
-    X_train, y_train = new_dataset(train, time_step)
-    X_test, y_test = new_dataset(test, time_step)
+    time_step = 1
+    X_train, y_train = new_dataset(y_train, time_step)
+    X_test, y_test = new_dataset(y_test, time_step)
+    #
+    # X_train = np.reshape(X_train, (X_train.shape[0], 1, X_train.shape[1]))
+    # X_test = np.reshape(X_test, (X_test.shape[0], 1, X_test.shape[1]))
+
+    # X_train, y_train = X_train.reshape(-1,1), y_train.reshape(-1,1)
+    # X_test, y_test = X_test.reshape(-1,1), y_test.reshape(-1,1)
 
     # applying pca to our algorithm
     # Created a PCA object that chooses the minimum number of components so that the variance is retained
@@ -135,7 +142,7 @@ def build_model(trainset):
 
 def train_model(model,train_test_datasets):
     ((X_train,y_train),(X_test, y_test))=train_test_datasets
-    model.fit(X_train, y_train, epochs=100, batch_size=50, validation_data=(X_test, y_test), verbose=0, shuffle=False)
+    model.fit(X_train, y_train, epochs=25, batch_size=50, validation_data=(X_test, y_test), verbose=0, shuffle=False)
 
 def predict(model,  testset):
     X_test,y_test=testset
@@ -171,16 +178,42 @@ def generate_graphs(data, y_actual, y_predict, X_test, rmse, scaler):
     fig = plt.figure(figsize=(16, 8))
     plt.plot(x_dates, y_test_reshape, label="Actual Bitcoin Price")
     plt.plot(x_dates, y_predict_reshape, label=f'Predicted Bitcoin Price (rmse: {rmse})', color='red')
+    plt.rc('xtick', labelsize=15)
+    plt.rc('ytick', labelsize=15)
     return fig
+
+def graph_training(data, y_actual, y_predict, X_train, rmse, scaler):
+    # converting X column to dates
+    x_dates = data[len(X_train)].index
+    print(f'LSTM predictDates: {x_dates}')
+
+    # scaling back to normal values
+    y_predicted_inverse = scaler.inverse_transform(y_predict.reshape(-1, 1))
+    y_actual_inverse = scaler.inverse_transform(y_actual.reshape(-1, 1))
+
+    # reshaping to be able to graph
+    y_train_reshape = y_actual_inverse.reshape(len(y_actual_inverse))
+    y_predict_reshape = y_predicted_inverse.reshape(len(y_predicted_inverse))
+
+    # return generate_df(y_test, y_pred, X_test)
+    fig = plt.figure()
+    fig = plt.figure(figsize=(16, 8))
+    plt.plot(x_dates, y_train_reshape, label="Actual Bitcoin Price")
+    plt.plot(x_dates, y_predict_reshape,  label=f'Predicted Bitcoin Price (rmse: {rmse})', )
+    plt.rc('xtick', labelsize=15)
+    plt.rc('ytick', labelsize=20)
+    return fig
+
 
 def run_lstm():
     datascaled, scaler, data =pre_processing()
-    train_test_datasets=split_dataset(datascaled)
+    dates=data['date']
+    train_test_datasets=split_dataset(dates, datascaled)
     trainset, testset=train_test_datasets
     model=build_model(trainset)
     train_model(model,train_test_datasets)
     (y_test,y_predict)=predict(model, testset)
     rmse=get_rmse(y_test,y_predict, scaler)
-    X_test,_=testset
+    X_test,y_test=testset
     return generate_graphs(data, y_test, y_predict, X_test, rmse, scaler)
 

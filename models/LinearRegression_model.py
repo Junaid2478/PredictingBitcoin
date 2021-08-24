@@ -7,10 +7,11 @@ import numpy as np
 from sklearn.decomposition import PCA
 from sklearn import preprocessing
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
-from sklearn.preprocessing import PolynomialFeatures
+from sklearn.preprocessing import PolynomialFeatures, LabelEncoder
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import mean_absolute_error
 
@@ -43,12 +44,35 @@ def run_linear_regression():
     X_test = np.array(test['date'])
     y_test = np.array(test['close']).reshape(-1, 1)
 
-    # label_encoder = LabelEncoder()
-    # integer_encoded = label_encoder.fit_transform(X_train)
+    # scaling our data
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    scaled_data = scaler.fit_transform(data['close'].values.reshape(-1, 1))
+    print(scaled_data)
+
+    # TODO: Replace all steps with label encoder
+    label_encoder = LabelEncoder()
+    all_data=np.append(X_train,X_test)
+    print(all_data)
+    X_steps = label_encoder.fit_transform(all_data)
+    X_train_steps =X_steps[:len(X_train)].reshape(-1,1)
+    X_test_steps =X_steps[len(X_train):].reshape(-1,1)
+    # X_test_steps =  label_encoder.fit_transform(X_test).reshape(-1, 1)
+
+
+    """
+    Gives each string a label, the label is an integer that allows us to compute the distance between datapoints. this is needed for all models. 
+    
+    Alternatively, we could have used one hot encoding, but this also works and is simpler. (one hot is better for higher dimensional data, we have 2d data)
+    
+    "1 JAN 2017: 06:00" -> 0
+    "1 JAN 2017: 07:00" -> 1
+    "1 JAN 2017: 07:00" -> 2
+    """
+
     # print(integer_encoded)
 
-    X_train_steps = np.array(range(len(X_train))).reshape(-1, 1)
-    X_test_steps = np.array(range(len(X_train), len(X_train) + len(X_test))).reshape(-1, 1)
+    # X_train_steps = np.array(range(len(X_train))).reshape(-1, 1)
+    # X_test_steps = np.array(range(len(X_train), len(X_train) + len(X_test))).reshape(-1, 1)
 
     polyreg = make_pipeline(
         PolynomialFeatures(degree=2),
@@ -68,7 +92,8 @@ def run_linear_regression():
     fig = plt.figure()
     fig = plt.figure(figsize=(16, 8))
     plt.plot(X_test, y_test.flatten(), label="Actual Bitcoin Price")
-    plt.plot(X_test, y_pred, label="Predicted Bitcoin Price", color='red')
+    plt.plot(X_test, y_pred, label="Predicted Bitcoin Price", color='red', linestyle= 'dashed')
+    plt.rc('xtick', labelsize=15)
+    plt.rc('ytick', labelsize=20)
     return fig
 
-  # TODO fix axis
