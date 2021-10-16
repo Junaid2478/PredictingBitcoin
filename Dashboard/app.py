@@ -1,20 +1,7 @@
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
-import plotly.express as px
-import pandas as pd
 from dash.dependencies import Output, Input
-
 from models.Ensemble_model import run_ensemble
 from models.KNN_model import run_knn
 from models.LSTM_model import run_lstm
-
-
-# -*- coding: utf-8 -*-
-
-# Run this app with `python app.py` and
-# visit http://127.0.0.1:8050/ in your web browser.
-
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -121,6 +108,3 @@ def update_graph(model_name,):
 if __name__=='__main__':
     app.run_server(debug=True)
 
-    # show the predicted key and actual key on the side of the dashboard
-    # change to the correct colors
-    #improve ensemble model

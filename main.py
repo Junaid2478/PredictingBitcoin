@@ -1,23 +1,16 @@
-
+from models.Ensemble_model import run_ensemble
 from models.LSTM_model import run_lstm
 from models.KNN_model import run_knn
 from models.RandomForest_model import run_random_forest
 from models.LinearRegression_model import run_linear_regression
 
-# class App:
-#     def __init__(self):
-#         gui=Gui()
-#         models=Something()
-
 
 
 def main(modelname):
     """
-    Change this to use "strategy pattern"
+    used this section to test models during project
     """
-    if  modelname == 'Dash':
-        run_dashboard()
-    elif  modelname == 'LSTM':
+    if  modelname == 'LSTM':
         run_lstm()
     elif modelname=='KNN':
         run_knn()
@@ -25,6 +18,8 @@ def main(modelname):
         run_random_forest()
     elif modelname=='Linear':
         run_linear_regression()
+    elif modelname == 'Ensemble':
+        run_ensemble()
 
 
 if __name__=='__main__':

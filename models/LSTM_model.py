@@ -99,12 +99,6 @@ def split_dataset(dates, scaled_data):
     time_step = 1
     X_train, y_train = new_dataset(y_train, time_step)
     X_test, y_test = new_dataset(y_test, time_step)
-    #
-    # X_train = np.reshape(X_train, (X_train.shape[0], 1, X_train.shape[1]))
-    # X_test = np.reshape(X_test, (X_test.shape[0], 1, X_test.shape[1]))
-
-    # X_train, y_train = X_train.reshape(-1,1), y_train.reshape(-1,1)
-    # X_test, y_test = X_test.reshape(-1,1), y_test.reshape(-1,1)
 
     # applying pca to our algorithm
     # Created a PCA object that chooses the minimum number of components so that the variance is retained
@@ -135,14 +129,14 @@ def build_model(trainset):
     model.add(Dropout(0.15))
     model.add(LSTM(units=50, return_sequences=True))
     model.add(Dropout(0.15))
-    model.add(Dense(units=1))  # prediction of the next closing value
+    model.add(Dense(units=1))
     model.compile(optimizer='adam', loss='mean_squared_error')
 
     return model
 
 def train_model(model,train_test_datasets):
     ((X_train,y_train),(X_test, y_test))=train_test_datasets
-    model.fit(X_train, y_train, epochs=25, batch_size=50, validation_data=(X_test, y_test), verbose=0, shuffle=False)
+    model.fit(X_train, y_train, epochs=100, batch_size=50, validation_data=(X_test, y_test), verbose=0, shuffle=False)
 
 def predict(model,  testset):
     X_test,y_test=testset
@@ -156,6 +150,7 @@ def get_rmse(y_actual, y_predict, scaler):
     y_predicted_inverse = scaler.inverse_transform(y_predict.reshape(-1, 1))
     y_actual_inverse = scaler.inverse_transform(y_actual.reshape(-1, 1))
 
+    # getting the RMSE error, can be configured to find MAE as demonstrated in other algorithms
     rmse = np.sqrt(mean_squared_error(y_actual_inverse, y_predicted_inverse))
     print('Test RMSE: %.3f' % rmse)
     return rmse
@@ -177,10 +172,11 @@ def generate_graphs(data, y_actual, y_predict, X_test, rmse, scaler):
     fig = plt.figure()
     fig = plt.figure(figsize=(16, 8))
     plt.plot(x_dates, y_test_reshape, label="Actual Bitcoin Price")
-    plt.plot(x_dates, y_predict_reshape, label=f'Predicted Bitcoin Price (rmse: {rmse})', color='red')
+    plt.plot(x_dates, y_predict_reshape, linestyle= 'dashed', label=f'Predicted Bitcoin Price (rmse: {rmse})', color='red')
     plt.rc('xtick', labelsize=15)
     plt.rc('ytick', labelsize=15)
     return fig
+    #  delete this shit
 
 def graph_training(data, y_actual, y_predict, X_train, rmse, scaler):
     # converting X column to dates
