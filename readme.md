@@ -1,5 +1,5 @@
 # Predicting the price of Bitcoin Machine Learning Project
-The purpose of this project is to develop multiple models for predicting the price of bitcoin. I 
+The purpose of this project is to develop multiple models for predicting the price of bitcoin using Python. I 
 used a historical dataset of previous bitcoin prices to do this. A key aspect of this project was 
 cleaning the dataset and applying various pre-processing techniques. There were a variety of 
 machine learning methods utilized in this project, including linear regression, K-nearest neighbour, 
