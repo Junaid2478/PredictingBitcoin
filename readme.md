@@ -13,4 +13,6 @@ were able to construct a dashboard that helped us visualise and comprehend our f
 made sure that this dashboard was accessible to a wide range of people, with a special focus on 
 people with poor vision and colour blindness.
 
+![Demonstrating the dropown feature](https://user-images.githubusercontent.com/79209011/138600884-820faae2-013c-4a56-b93e-b1fe23b49c89.PNG)
+
 # 
