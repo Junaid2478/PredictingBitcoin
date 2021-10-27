@@ -11,7 +11,10 @@ predict with the same considerations as our other algorithms. We discovered that
 regressor performed worse than any individual model during our implementation. Finally, we 
 were able to construct a dashboard that helped us visualise and comprehend our findings. We 
 made sure that this dashboard was accessible to a wide range of people, with a special focus on 
-people with poor vision and colour blindness.
+people with poor vision and colour blindness. There were many libraries utilized in this project
+I used popular machine learning libraries such as Sckit-learn, TensorFlow and Keras. I also used
+the dash framework to implement the interactive dashboard.
+
 
 ![Demonstrating the dropown feature](https://user-images.githubusercontent.com/79209011/138600884-820faae2-013c-4a56-b93e-b1fe23b49c89.PNG)
 
